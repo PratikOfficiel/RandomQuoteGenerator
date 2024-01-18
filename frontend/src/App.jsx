@@ -1,4 +1,4 @@
-
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import './App.css'
 
@@ -12,7 +12,7 @@ function getRandomColor() {
 }
 
 function App() {
-  const [quote,setQuote] = useState('');
+  const [quote,setQuote] = useState({});
   const [loading,setLoading] = useState(false);
   const [bgcolor,setBgcolor] = useState('gray');
 
@@ -20,17 +20,17 @@ function App() {
 
     setLoading(true);
 
-    fetch("https://type.fit/api/quotes")
+    axios.get('https://type.fit/api/quotes')
     .then((response)=>{
-      return response.json();
-    })
-    .then((data)=>{
-      const quote = (data[(Math.floor(Math.random()*(data.length+1)))]).text;
+      
+      const data = response.data;
+      console.log(data);
+      const quote = data[(Math.floor(Math.random()*(data.length)))]
       setQuote(quote);
       setBgcolor(getRandomColor());
       setLoading(false);
     })
-    .catch((err)=>(console.log(err)));
+    .catch((err)=>(console.log("error in the frontend; ",err)));
 
   }
 
@@ -41,10 +41,13 @@ function App() {
   },[])
 
   return (
-    <div className='app' style={{background:bgcolor}}>
-      <div className='card' style={{background:`linear-gradient( rgba(0,0,0,0.3), rgba(0,0,0,0.3) ), ${bgcolor}`}}>
-        <h1 className='heading'>{loading?('...'):(quote)}</h1>
-        <button onClick={getQuote} className='button'>
+    <div className='grid place-content-center h-screen w-screen' style={{background:bgcolor}}>
+      <div className='p-6 max-w-screen-md mx-auto rounded-md grid place-content-center shadow-2xl bg-black/20'>
+        <blockquote className='text-teal-50 text-4xl m-6' style={{fontFamily: "'Kalam', cursive"}}>
+          {loading?('Loading...'):(`"${quote.text}"`)} 
+          <footer className='text-xl mt-4 text-right'>{loading?(''):(`~ ${quote.author}`)} </footer>
+        </blockquote>
+        <button onClick={getQuote} className='btn bg-black/20 p-3 mt-4 text-cyan-50 rounded-xl mx-auto shadow-lg text-lg hover:bg-black/10'> 
           <span>New Quote</span>
         </button>
       </div>
