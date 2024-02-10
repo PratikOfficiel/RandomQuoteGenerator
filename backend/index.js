@@ -12,7 +12,7 @@ app.get('/api/quotes', (req, res) => {
         res.send(response.data);
     })
     .catch((err)=>{
-        res.send(`there is some error in the backend ${err}`)
+        res.send(`there is some error in your backend ${err}`)
     })
 })
 
